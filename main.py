@@ -1,3 +1,6 @@
+"""
+Dataset resource: https://datahub.io/machine-learning/creditcard#data
+"""
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from models import AnomalyDetection
