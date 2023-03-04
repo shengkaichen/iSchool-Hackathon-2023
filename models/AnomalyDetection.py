@@ -1,13 +1,8 @@
-"""
-Dataset resource: https://datahub.io/machine-learning/creditcard#data
-"""
-from sklearn.decomposition import PCA
+from iSchool_Hackathon.helper_functions import Tools
 from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import IsolationForest
 from sklearn.covariance import EllipticEnvelope
-import pandas as pd
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -28,7 +23,7 @@ def isolation_forest(df, ratio):
     y_pred = model.predict(X_test)
 
     # change the predicted values to fit the dataset labels
-    y_pred = update_label(y_pred, y_train.min(), y_train.max())
+    y_pred = Tools.update_label(y_pred, y_train.min(), y_train.max())
     X_test['anomalies'] = y_pred
     anomalies = X_test[X_test.anomalies == y_train.max()]
 
@@ -54,7 +49,7 @@ def elliptical_envelope(df, ratio):
     y_pred = model.predict(X_test)
 
     # change the predicted values to fit the dataset labels
-    y_pred = update_label(y_pred, y_train.min(), y_train.max())
+    y_pred = Tools.update_label(y_pred, y_train.min(), y_train.max())
     X_test['anomalies'] = y_pred
     anomalies = X_test[X_test.anomalies == y_train.max()]
 
@@ -63,40 +58,3 @@ def elliptical_envelope(df, ratio):
     return anomalies
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def pca(d, df):
-    model = PCA(n_components=d)
-    model.fit(df)
-    data_pca = model.transform(df)
-    return pd.DataFrame(data_pca)
-
-
-def read_label(df, col):
-    """
-    :param df: 1D dataframe that contains string label
-    :param col: a string that contains name of the label column
-    :return: entire dataframe with int label
-    """
-    df[col] = preprocessing.LabelEncoder().fit_transform(df[col])
-
-
-def update_label(df, min_value, max_value):
-    data = df.copy()
-    data[df == 1] = min_value  # normal
-    data[df == -1] = max_value  # outlier
-    return data
